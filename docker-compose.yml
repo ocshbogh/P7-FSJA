@@ -1,0 +1,15 @@
+services:
+
+  front:
+    container_name: orion-microcrm-front-container
+    image: ghcr.io/ocshbogh/p7-fsja/orion-microcrm-front:develop
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+  back:
+    container_name: orion-microcrm-back-container
+    image: ghcr.io/ocshbogh/p7-fsja/orion-microcrm-back:develop
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
