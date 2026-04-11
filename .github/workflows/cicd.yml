@@ -122,19 +122,21 @@ jobs:
         id: meta-back
         uses: docker/metadata-action@v6
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACK }}
-
-      - name: Build docker back image
-        run: docker build --target back -t ${{ steps.meta-back.outputs.tags }} .
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACK }}
+          tags: |
+            type=raw,value=latest
+            type=raw,value={{commit_date 'YYYYMMDD-HHmmss'}}
 
       - name: Extract Docker front metadata
         id: meta-front
         uses: docker/metadata-action@v6
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONT }}
-
-      - name: Build docker front image
-        run: docker build --target front -t ${{ steps.meta-front.outputs.tags }} .
+          images: |
+              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONT }}
+          tags: |
+            type=raw,value=latest
+            type=raw,value={{commit_date 'YYYYMMDD-HHmmss'}}
 
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@v4
@@ -143,11 +145,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push docker back image
-        run: docker push ${{ steps.meta-back.outputs.tags }}
+      - name: Build and push back image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          target: back
+          tags: ${{ steps.meta-back.outputs.tags }}
+          labels: ${{ steps.meta-back.outputs.labels }}
+          push: true
 
-      - name: Push docker front image
-        run: docker push ${{ steps.meta-front.outputs.tags }}
+      - name: Build and push front image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          target: front
+          tags: ${{ steps.meta-front.outputs.tags }}
+          labels: ${{ steps.meta-front.outputs.labels }}
+          push: true
 
 
   deploy:
