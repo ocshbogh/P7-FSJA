@@ -28,7 +28,7 @@ public class PersonRepositoryIntegrationTest {
         entityManager.flush();
 
         // when
-        Optional<Person> found = personRepository.findByEmail("johndoe@example.net");
+        Optional<Person> found = personRepository.findByEmail("jdoe@example.net");
 
         assertEquals(jdoe.getEmail(), found.get().getEmail());
     }
