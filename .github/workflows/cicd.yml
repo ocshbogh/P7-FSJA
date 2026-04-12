@@ -207,27 +207,30 @@ jobs:
           fi
           
           if [ "$STATUS" = "success" ]; then
-          COMMIT_TS=$(date -d "$COMMIT_DATE" +%s)
-          CURRENT_TS=$(date -u +%s)
-          LEAD_TIME_SECONDS=$((CURRENT_TS - COMMIT_TS))
-          DEPLOYMENT_EVENT="{\"type\":\"deployment\",\"commitId\":\"$GITHUB_SHA\",\"datetime\":\"$CURRENT_DATE\",\"status\":\"$STATUS\",\"leadTimeSeconds\":$LEAD_TIME_SECONDS}"
+            COMMIT_TS=$(date -d "$COMMIT_DATE" +%s)
+            CURRENT_TS=$(date -u +%s)
+            LEAD_TIME_SECONDS=$((CURRENT_TS - COMMIT_TS))
+            DEPLOYMENT_EVENT="{\"type\":\"deployment\",\"commitId\":\"$GITHUB_SHA\",\"datetime\":\"$CURRENT_DATE\",\"status\":\"$STATUS\",\"leadTimeSeconds\":$LEAD_TIME_SECONDS}"
           else
-          DEPLOYMENT_EVENT="{\"type\":\"deployment\",\"commitId\":\"$GITHUB_SHA\",\"datetime\":\"$CURRENT_DATE\",\"status\":\"$STATUS\"}"
+            DEPLOYMENT_EVENT="{\"type\":\"deployment\",\"commitId\":\"$GITHUB_SHA\",\"datetime\":\"$CURRENT_DATE\",\"status\":\"$STATUS\"}"
           fi
           
           INCIDENT_EVENT="null"
           if [ "$STATUS" != "success" ]; then
-            START=$CURRENT_DATE
-            INCIDENT_EVENT="{\"type\":\"incident\",\"datetime\":\"$START\",\"commitId\":\"$GITHUB_SHA\"}"
+            INCIDENT_ID=$(uuidgen)
+            INCIDENT_EVENT="{\"type\":\"incident\",\"datetime\":\"$CURRENT_DATE\",\"commitId\":\"$GITHUB_SHA\",\"incidentId\":\"$INCIDENT_ID\"}"
           fi
           
           echo "$COMMIT_EVENT" >> $FILE
           echo "$DEPLOYMENT_EVENT" >> $FILE
           if [ "$STATUS" != "success" ]; then
-          echo "$INCIDENT_EVENT" >> $FILE
+            echo "$INCIDENT_EVENT" >> $FILE
           fi
           
           cat $FILE
+          echo "-----"
+          echo "closed incident template"
+          echo "{\"type\":\"incident\",\"datetime\":\"$CURRENT_DATE\",\"commitId\":\"$GITHUB_SHA\",\"incidentId\":\"uuid-placeholder\",\"resolvedTimeSeconds\":0000}"
 
       - name: Upload DORA artifact
         uses: actions/upload-artifact@v6
