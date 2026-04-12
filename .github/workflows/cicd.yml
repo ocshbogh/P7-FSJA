@@ -190,8 +190,10 @@ jobs:
         run: |
           ID=$(uuidgen)
           FILE=dora-$ID.ndjson
+          COMMIT_DATE=$(git log -1 --format=%cI)
+          CURRENT_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           
-          COMMIT_EVENT="{\"type\":\"commit\",\"commitId\":\"$GITHUB_SHA\",\"datetime\":\"$(git log -1 --format=%cI)\"}"
+          COMMIT_EVENT="{\"type\":\"commit\",\"commitId\":\"$GITHUB_SHA\",\"datetime\":\"$COMMIT_DATE\"}"
           
           STATUS="success"
           if [ "${{ needs.build-back.result }}" != "success" ] || \
@@ -204,11 +206,18 @@ jobs:
           STATUS="failure"
           fi
           
-          DEPLOYMENT_EVENT="{\"type\":\"deployment\",\"commitId\":\"$GITHUB_SHA\",\"datetime\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"status\":\"$STATUS\"}"
+          if [ "$STATUS" = "success" ]; then
+          COMMIT_TS=$(date -d "$COMMIT_DATE" +%s)
+          CURRENT_TS=$(date -u +%s)
+          LEAD_TIME_SECONDS=$((CURRENT_TS - COMMIT_TS))
+          DEPLOYMENT_EVENT="{\"type\":\"deployment\",\"commitId\":\"$GITHUB_SHA\",\"datetime\":\"$CURRENT_DATE\",\"status\":\"$STATUS\",\"lead_time_seconds\":$LEAD_TIME_SECONDS}"
+          else
+          DEPLOYMENT_EVENT="{\"type\":\"deployment\",\"commitId\":\"$GITHUB_SHA\",\"datetime\":\"$CURRENT_DATE\",\"status\":\"$STATUS\"}"
+          fi
           
           INCIDENT_EVENT="null"
           if [ "$STATUS" != "success" ]; then
-            START=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+            START=$CURRENT_DATE
             INCIDENT_EVENT="{\"type\":\"incident\",\"datetime\":\"$START\",\"commitId\":\"$GITHUB_SHA\"}"
           fi
           
