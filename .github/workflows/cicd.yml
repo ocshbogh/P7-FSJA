@@ -210,7 +210,7 @@ jobs:
           COMMIT_TS=$(date -d "$COMMIT_DATE" +%s)
           CURRENT_TS=$(date -u +%s)
           LEAD_TIME_SECONDS=$((CURRENT_TS - COMMIT_TS))
-          DEPLOYMENT_EVENT="{\"type\":\"deployment\",\"commitId\":\"$GITHUB_SHA\",\"datetime\":\"$CURRENT_DATE\",\"status\":\"$STATUS\",\"lead_time_seconds\":$LEAD_TIME_SECONDS}"
+          DEPLOYMENT_EVENT="{\"type\":\"deployment\",\"commitId\":\"$GITHUB_SHA\",\"datetime\":\"$CURRENT_DATE\",\"status\":\"$STATUS\",\"leadTimeSeconds\":$LEAD_TIME_SECONDS}"
           else
           DEPLOYMENT_EVENT="{\"type\":\"deployment\",\"commitId\":\"$GITHUB_SHA\",\"datetime\":\"$CURRENT_DATE\",\"status\":\"$STATUS\"}"
           fi
