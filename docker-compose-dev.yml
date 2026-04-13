@@ -18,6 +18,12 @@ services:
       dockerfile: Dockerfile
       target: back
     image: orion-microcrm-back:latest
+    volumes:
+      - back-volume:/app/logs
     ports:
       - "8080:8080"
     restart: unless-stopped
+
+volumes:
+  back-volume:
+    name: p7-fsja_back-volume
