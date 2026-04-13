@@ -27,7 +27,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./logstash/pipeline:/usr/share/logstash/pipeline
-      - back-volume:/app/logs
+      - back-volume:/app/logs/spring
+      - caddy-volume:/app/logs/caddy
     ports:
       - "5000:5000"
     depends_on:
@@ -38,3 +39,6 @@ volumes:
   back-volume:
     external: true
     name: p7-fsja_back-volume
+  caddy-volume:
+    external: true
+    name: p7-fsja_caddy-volume

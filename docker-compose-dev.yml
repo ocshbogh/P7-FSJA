@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile
       target: front
     image: orion-microcrm-front:latest
+    volumes:
+      - caddy-volume:/app/log/
     ports:
       - "80:80"
     restart: unless-stopped
@@ -27,3 +29,5 @@ services:
 volumes:
   back-volume:
     name: p7-fsja_back-volume
+  caddy-volume:
+    name: p7-fsja_caddy-volume
