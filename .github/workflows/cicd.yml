@@ -126,6 +126,14 @@ jobs:
         working-directory: back
         run: ./gradlew clean build
 
+      - name: Dependency installation
+        working-directory: front
+        run: npm install
+
+      - name: Test with npm
+        working-directory: front
+        run: npm run test-cov
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v7.1.0
         env:
