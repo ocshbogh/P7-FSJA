@@ -110,8 +110,8 @@ jobs:
           path: front/coverage
 
 
-  sonarqube-back:
-    needs: test-back
+  sonarqube:
+    needs: [test-back, test-front]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -119,35 +119,12 @@ jobs:
           fetch-depth: 0
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v7.1.0
-        with:
-          projectBaseDir: back/src
-          args: >
-            -Dsonar.organization=ocshbogh
-            "-Dsonar.projectKey=ocshbogh_P7-FSJA"
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-
-  sonarqube-front:
-    needs: test-front
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v7.1.0
-        with:
-          projectBaseDir: front/src
-          args: >
-            -Dsonar.organization=ocshbogh
-            "-Dsonar.projectKey=ocshbogh_P7-FSJA"
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 
   containerization:
-    needs: [sonarqube-back, sonarqube-front]
+    needs: sonarqube
     permissions:
       packages: write
     runs-on: ubuntu-22.04
@@ -216,7 +193,7 @@ jobs:
 
 
   dora:
-    needs: [deploy, containerization, test-back, test-front, sonarqube-back, sonarqube-front, build-front, build-back]
+    needs: [deploy, containerization, test-back, test-front, sonarqube, build-front, build-back]
     runs-on: ubuntu-22.04
     if: always()
     steps:
@@ -236,8 +213,7 @@ jobs:
           [ "${{ needs.build-front.result }}" != "success" ] || \
           [ "${{ needs.test-back.result }}" != "success" ] || \
           [ "${{ needs.test-front.result }}" != "success" ] || \
-          [ "${{ needs.sonarqube-back.result }}" != "success" ] || \
-          [ "${{ needs.sonarqube-front.result }}" != "success" ] || \
+          [ "${{ needs.sonarqube.result }}" != "success" ] || \
           [ "${{ needs.containerization.result }}" != "success" ] || \
           [ "${{ needs.deploy.result }}" != "success" ] || \
           [ "${{ job.status }}" != "success" ]; then
