@@ -117,6 +117,15 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      - name: Update Gradle permission
+        working-directory: back
+        run: chmod +x ./gradlew
+
+      - name: Build back with Gradle Wrapper
+        working-directory: back
+        run: ./gradlew clean build
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v7.1.0
         env:
