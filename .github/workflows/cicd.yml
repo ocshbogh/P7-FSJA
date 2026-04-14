@@ -81,13 +81,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: test-back-artefact
-          path: back/build/reports/tests/
-
-      - name: Upload back test coverage artefacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: test-back-coverage-artefact
-          path: back/build/reports/jacoco/test/jacocoTestReport.xml
+          path: back/build/reports/
 
 
   test-front:
@@ -128,15 +122,9 @@ jobs:
         working-directory: back
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle Wrapper
+      - name: Build back with Gradle Wrapper
         working-directory: back
-        run: ./gradlew classes testClasses
-
-      - name: Download back test coverage artefacts
-        uses: actions/download-artifact@v8.0.1
-        with:
-          name: test-back-coverage-artefact
-          path: back/build/reports/jacoco/test/jacocoTestReport.xml
+        run: ./gradlew clean build
 
       - name: Download front test artefacts
         uses: actions/download-artifact@v8.0.1
