@@ -123,7 +123,7 @@ jobs:
           projectBaseDir: back/src
           args: >
             -Dsonar.organization=ocshbogh
-            -Dsonar.projectKey=ocshbogh
+            -Dsonar.projectKey=ocshbogh_P7-FSJA
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -141,7 +141,7 @@ jobs:
           projectBaseDir: front/src
           args: >
             -Dsonar.organization=ocshbogh
-            -Dsonar.projectKey=ocshbogh
+            -Dsonar.projectKey=ocshbogh_P7-FSJA
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
