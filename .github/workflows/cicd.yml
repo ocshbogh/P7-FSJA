@@ -34,6 +34,12 @@ jobs:
         working-directory: back
         run: ./gradlew clean assemble
 
+      - name: Upload back classes artefacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: classes-back-artefact
+          path: back/build/classes
+
 
   build-front:
     runs-on: ubuntu-22.04
@@ -83,6 +89,12 @@ jobs:
           name: test-back-artefact
           path: back/build/reports/tests/
 
+      - name: Upload back test coverage artefacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: test-back-coverage-artefact
+          path: back/build/reports/jacoco/test/jacocoTestReport.xml
+
 
   test-front:
     needs: build-front
@@ -118,13 +130,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Update Gradle permission
-        working-directory: back
-        run: chmod +x ./gradlew
+      - name: Download back classes artefacts
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: classes-back-artefact
+          path: back/build/classes
 
-      - name: Build back with Gradle Wrapper
-        working-directory: back
-        run: ./gradlew clean build
+      - name: Download back test coverage artefacts
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: test-back-coverage-artefact
+          path: back/build/reports/jacoco/test/jacocoTestReport.xml
 
       - name: Download front test artefacts
         uses: actions/download-artifact@v8.0.1
