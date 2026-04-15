@@ -2,14 +2,24 @@ services:
 
   front:
     container_name: orion-microcrm-front-container
-    image: ghcr.io/ocshbogh/p7-fsja/orion-microcrm-front:develop
+    image: ghcr.io/ocshbogh/p7-fsja/orion-microcrm-front:latest
+    volumes:
+      - caddy-volume:/app/log/
     ports:
       - "80:80"
     restart: unless-stopped
 
   back:
     container_name: orion-microcrm-back-container
-    image: ghcr.io/ocshbogh/p7-fsja/orion-microcrm-back:develop
+    image: ghcr.io/ocshbogh/p7-fsja/orion-microcrm-back:latest
+    volumes:
+      - back-volume:/app/logs
     ports:
       - "8080:8080"
     restart: unless-stopped
+
+volumes:
+  back-volume:
+    name: p7-fsja_back-volume
+  caddy-volume:
+    name: p7-fsja_caddy-volume
