@@ -153,3 +153,33 @@ docker run -it --rm -p 8080:8080 -p 80:80 -p 443:443 orion-microcrm-standalone:l
 ```
 
 L'application sera disponible sur https://localhost et l'API sur http://localhost:8080.
+
+
+### Docker compose
+
+##### Local
+
+```shell
+docker compose -f docker-compose-dev.yml up -d --build
+```
+
+##### Stack ELK
+
+```shell
+docker compose -f docker-compose-elk.yml up -d --build
+```
+
+- L'application sera disponible sur https://localhost.
+- l'API sur http://localhost:8080.
+- Kibana sur http://localhost:5601.
+- Elasticsearch sur http://localhost:9200.
+- Logstash sur http://localhost:5000. 
+  - Exemple pour envoyer des logs DORA : 
+  - ```shell
+    curl -X POST "http://localhost:5000" \
+    -H "Content-Type: application/x-ndjson" \
+    --data-binary '
+    {"type":"commit","commitId":"aaaaa","datetime":"2026-01-01T01:01:01Z"}
+    {"type":"deployment","commitId":"aaaaa","datetime":"2026-01-01T01:02:01Z","status":"success","leadTimeSeconds":60}
+    '
+    ```
