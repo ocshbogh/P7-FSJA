@@ -198,6 +198,10 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Login SSH
+#        run: ssh user@hostname
+        run: echo "ssh user@hostname"
+
       - name: Pull docker images
 #        run: docker compose pull
         run: echo "docker compose pull"
