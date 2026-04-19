@@ -163,7 +163,7 @@ L'application sera disponible sur https://localhost et l'API sur http://localhos
 docker compose -f docker-compose-dev.yml up -d --build
 ```
 
-##### Stack ELK
+###### Stack ELK
 
 ```shell
 docker compose -f docker-compose-elk.yml up -d --build
